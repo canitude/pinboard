@@ -165,14 +165,21 @@ bc::config::checkpoint chain_sync_state::get_top_checkpoint() const
     return ch;
 }
 
-bool chain_sync_state::merge(headers_const_ptr message) {
+bc::code chain_sync_state::merge(headers_const_ptr message) {
     LOG_INFO(LOG_CHAIN_LISTENER) << "-> chain_sync_state::merge";
 
     size_t count = 0;
-    hash_digest oldest_header_id = null_hash;
+    hash_digest latest_header_id = null_hash;
 
     for (const auto &h : message->elements()) {
         chain::lite_header lh(h);
+
+        bc::code ec = lh.check(true);
+        if (ec != error::success)
+        {
+            LOG_WARNING(LOG_CHAIN_LISTENER) << "Bad PoW in header with hash " << bc::encode_base16(lh.hash());
+            return ec;
+        }
 
         ///////////////////////////////////////////////////////////////////////////
         // Critical Section.
@@ -193,7 +200,7 @@ bool chain_sync_state::merge(headers_const_ptr message) {
             known_blocks_[lh.hash()] = lh;
             chain_[lh.validation.height - starting_height_].insert(lh.hash());
             count++;
-            oldest_header_id = lh.hash();
+            latest_header_id = lh.hash();
         }
         ///////////////////////////////////////////////////////////////////////////
     }
@@ -201,7 +208,7 @@ bool chain_sync_state::merge(headers_const_ptr message) {
     if (count > 0)
     {
         inventory inv;
-        inv.inventories().emplace_back(move(inventory_vector(inventory_vector::type_id::block, oldest_header_id)));
+        inv.inventories().emplace_back(move(inventory_vector(inventory_vector::type_id::block, latest_header_id)));
         broadcaster_->broadcast_to_pb(inv,
             [](const bc::code &errc, typename network::channel<network::message_subscriber_ex>::ptr channel)
             {
@@ -213,7 +220,7 @@ bool chain_sync_state::merge(headers_const_ptr message) {
             });
     }
 
-    return true;
+    return error::success;
 }
 
 bool chain_sync_state::get_header_by_id(const hash_digest &id, chain::lite_header &header)

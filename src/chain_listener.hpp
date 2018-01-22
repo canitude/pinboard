@@ -42,7 +42,7 @@ public:
     explicit chain_sync_state(bc::node::message_broadcaster::ptr broadcaster, const bc::chain::lite_header& last_checkpoint);
     virtual ~chain_sync_state();
 
-    bool merge(bc::headers_const_ptr message);
+    bc::code merge(bc::headers_const_ptr message);
 
     bool try_to_connect_orphans() { return false; }
 

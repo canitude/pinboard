@@ -120,11 +120,14 @@ bool protocol_lite_header_sync::handle_receive_headers(const code& ec,
     if (stopped(ec))
         return false;
 
-    if (!chain_state_->merge(message))
+    code merge_error = chain_state_->merge(message);
+    if (merge_error != error::success)
     {
         LOG_WARNING(LOG_PROTO_HEADER_SYNC)
-            << "Failure merging headers from [" << authority() << "]";
-        complete(error::invalid_previous_block);
+            << "Failure merging headers from [" << authority() << "]: " << merge_error;
+        complete(merge_error);
+        stop(merge_error);
+        return false;
     }
 
     if (message->elements().size() == max_get_headers) // Better way to verify is needed

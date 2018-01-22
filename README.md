@@ -8,6 +8,7 @@ Pinboard isn't ready for any practical use.
 
 # Building
 
+## Ubuntu 16.04
 Make sure you have installed [libbitcoin](https://github.com/libbitcoin/libbitcoin) and [libaltcoin-network](https://github.com/canitude/libaltcoin-network) beforehand. In both libbitcoin and libaltcoin-network version3 branch is required.
 
 ```sh
