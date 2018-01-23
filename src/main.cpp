@@ -214,6 +214,7 @@ parameters parse_command_line(int argc, char* argv[], bc::network::settings& set
             ("max-addresses", value<uint32_t>(), "Store at most <arg> peer addresses")
             ("connect-to", value<vector<string>>()->multitoken()->composing(), "List of peers to connect to" )
             ("set-ip", value<string>(), "Store at most <arg> peer addresses")
+            ("dont-use-seeds", "Don't ask Litecoin seeds for peer addresses" )
             ("dont-guess-ip", "Don't guess external ip" );
 
     command_line_parser parser{argc, argv};
@@ -286,6 +287,11 @@ parameters parse_command_line(int argc, char* argv[], bc::network::settings& set
     if (vm.count("dont-guess-ip"))
     {
         param.dont_guess_external_ip = true;
+    }
+
+    if (vm.count("dont-use-seeds"))
+    {
+        settings.seeds.clear();
     }
 
     if (vm.count("set-ip"))
