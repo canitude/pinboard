@@ -30,14 +30,15 @@ chain_sync_state::chain_sync_state(message_broadcaster::ptr broadcaster, const b
     : broadcaster_(broadcaster),
       starting_height_(last_checkpoint.validation.height)
 {
-    //chain_.reserve(last_checkpoint.validation.height + 100000); // commented for testing purpose
+    //chain_.reserve(100000); // commented for testing purpose
     chain_.resize(1);
     chain_[0].insert(last_checkpoint.hash());
     known_blocks_[last_checkpoint.hash()] = last_checkpoint;
     LOG_INFO(LOG_CHAIN_LISTENER) << "chain_sync_state::chain_sync_state completed.";
 }
 
-chain_sync_state::~chain_sync_state() {
+chain_sync_state::~chain_sync_state()
+{
     LOG_INFO(LOG_CHAIN_LISTENER) << "-> chain_sync_state::~chain_sync_state";
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section.
@@ -50,7 +51,8 @@ chain_sync_state::~chain_sync_state() {
     ///////////////////////////////////////////////////////////////////////////
 }
 
-const set<hash_digest> chain_sync_state::get_last_known_block_hash() const {
+const set<hash_digest> chain_sync_state::get_last_known_block_hash() const
+{
     ///////////////////////////////////////////////////////////////////////////
     // Critical Section.
     bc::shared_lock lock(mutex_);
@@ -69,7 +71,8 @@ const set<hash_digest> chain_sync_state::get_last_known_block_hash() const {
     ///////////////////////////////////////////////////////////////////////////
 }
 
-const std::set<bc::hash_digest> chain_sync_state::get_known_block_hashes(size_t height) const {
+const std::set<bc::hash_digest> chain_sync_state::get_known_block_hashes(size_t height) const
+{
     const set<hash_digest> empty_set;
     if (height < starting_height_)
     {
@@ -104,22 +107,22 @@ const std::set<bc::hash_digest> chain_sync_state::get_known_block_hashes(size_t 
     ///////////////////////////////////////////////////////////////////////////
 }
 
-uint32_t chain_sync_state::get_oldest_timestamp() const
+uint32_t chain_sync_state::get_latest_timestamp() const
 {
     const set<hash_digest> top = get_last_known_block_hash();
 
-    uint32_t oldest_timestamp = 0;
+    uint32_t latest_timestamp = 0;
     for (const auto &h : top)
     {
         if (h != null_hash)
         {
             const auto iter = known_blocks_.find(h);
-            if (iter->second.timestamp() > oldest_timestamp)
-                oldest_timestamp = iter->second.timestamp();
+            if (iter->second.timestamp() > latest_timestamp)
+                latest_timestamp = iter->second.timestamp();
         }
 
     }
-    return oldest_timestamp;
+    return latest_timestamp;
 }
 
 size_t chain_sync_state::get_top_height() const
@@ -165,13 +168,15 @@ bc::config::checkpoint chain_sync_state::get_top_checkpoint() const
     return ch;
 }
 
-bc::code chain_sync_state::merge(headers_const_ptr message) {
+bc::code chain_sync_state::merge(headers_const_ptr message)
+{
     LOG_INFO(LOG_CHAIN_LISTENER) << "-> chain_sync_state::merge";
 
     size_t count = 0;
     hash_digest latest_header_id = null_hash;
 
-    for (const auto &h : message->elements()) {
+    for (const auto &h : message->elements())
+    {
         chain::lite_header lh(h);
 
         bc::code ec = lh.check(true);
@@ -185,15 +190,19 @@ bc::code chain_sync_state::merge(headers_const_ptr message) {
         // Critical Section.
         bc::unique_lock lock(mutex_);
 
-        if (known_blocks_.find(lh.hash()) != known_blocks_.end()) {
+        if (known_blocks_.find(lh.hash()) != known_blocks_.end())
+        {
             LOG_INFO(LOG_CHAIN_LISTENER) << "Header with hash " << bc::encode_base16(lh.hash()) << " is already known";
             continue;
         }
 
         hash_to_header_map::const_iterator iter = known_blocks_.find(lh.previous_block_hash());
-        if (known_blocks_.end() == iter) {
+        if (known_blocks_.end() == iter)
+        {
             // TODO: add everything to orphan map
-        } else {
+        }
+        else
+        {
             lh.validation.height = iter->second.validation.height + 1;
             if (chain_.size() <= lh.validation.height)
                 chain_.resize(lh.validation.height - starting_height_ + 1);

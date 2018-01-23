@@ -37,20 +37,20 @@ class lite_node;
 
 /// Pinboard sync protocol, thread safe.
 class BCT_API protocol_pinboard_sync
-  : public network::protocol_timer<bc::network::message_subscriber_ex>, public track<protocol_pinboard_sync>
+  : public network::protocol_timer<network::message_subscriber_ex>, public track<protocol_pinboard_sync>
 {
 public:
     typedef std::shared_ptr<protocol_pinboard_sync> ptr;
 
     /// Construct a header sync protocol instance.
     protocol_pinboard_sync(lite_node& network,
-        typename network::channel<bc::network::message_subscriber_ex>::ptr channel,
+        typename network::channel<network::message_subscriber_ex>::ptr channel,
         chain_sync_state::ptr chain_state, pinboard::ptr pinboard);
 
     /// Start the protocol.
     virtual void start(event_handler handler);
 
-    bool send_object(const bc::message::object_payload& op);
+    bool send_object(const message::object_payload& op);
 
 private:
     bool handle_receive_object(const code& ec, object_const_ptr message, event_handler complete);
@@ -64,7 +64,7 @@ private:
 
     // -------------------------------------------------------------------------
     mutable bc::upgrade_mutex mutex_;
-    std::set<bc::hash_digest> oldest_known_hashes;
+    std::set<hash_digest> oldest_known_hashes;
     // -------------------------------------------------------------------------
 };
 

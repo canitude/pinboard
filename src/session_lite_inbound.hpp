@@ -29,22 +29,23 @@ namespace network { class message_subscriber_ex; }
 
 namespace node {
 
-class lite_node;
-
 /// Inbound connections session, thread safe.
 class BCT_API session_lite_inbound
-  : public lite_session<network::session_inbound<bc::network::message_subscriber_ex>, bc::network::message_subscriber_ex>,
+  : public lite_session<network::session_inbound<network::message_subscriber_ex>,
+                        network::message_subscriber_ex>,
     track<session_lite_inbound>
 {
 public:
     typedef std::shared_ptr<session_lite_inbound> ptr;
 
     /// Construct an instance.
-    session_lite_inbound(lite_node& network, chain_sync_state::ptr chain_state, pinboard::ptr pinboard);
+    session_lite_inbound(lite_node& network,
+                         chain_sync_state::ptr chain_state,
+                         pinboard::ptr pinboard);
 
 protected:
     /// Overridden to attach blockchain protocols.
-    void attach_protocols(typename network::channel<bc::network::message_subscriber_ex>::ptr channel) override;
+    void attach_protocols(typename network::channel<network::message_subscriber_ex>::ptr channel) override;
 
     chain_sync_state::ptr chain_state_;
     pinboard::ptr pinboard_;

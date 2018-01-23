@@ -38,8 +38,8 @@ using namespace std::placeholders;
 session_lite_manual::session_lite_manual(lite_node& network,
                                          chain_sync_state::ptr chain_state,
                                          pinboard::ptr pinboard)
-  : lite_session<network::session_manual<message_subscriber_ex>, message_subscriber_ex>(network, true),
-    CONSTRUCT_TRACK(node::session_lite_manual),
+  : lite_session<session_manual<message_subscriber_ex>, message_subscriber_ex>(network, true),
+    CONSTRUCT_TRACK(session_lite_manual),
     chain_state_(chain_state),
     pinboard_(pinboard)
 {

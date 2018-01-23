@@ -33,7 +33,8 @@
 
 #define LOG_CHAIN_LISTENER "chain_listener"
 
-class chain_sync_state {
+class chain_sync_state
+{
 public:
     typedef std::shared_ptr<chain_sync_state> ptr;
 
@@ -48,7 +49,7 @@ public:
 
     const std::set<bc::hash_digest> get_last_known_block_hash() const;
     const std::set<bc::hash_digest> get_known_block_hashes(size_t height) const;
-    uint32_t get_oldest_timestamp() const;
+    uint32_t get_latest_timestamp() const;
     size_t get_top_height() const;
     bc::config::checkpoint get_top_checkpoint() const;
     bool get_header_by_id(const bc::hash_digest &id, bc::chain::lite_header &header);

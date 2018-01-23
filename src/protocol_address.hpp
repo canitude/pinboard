@@ -38,7 +38,8 @@ class lite_node;
  * Attach this to a channel immediately following handshake completion.
  */
 class BCT_API protocol_address
-  : public network::protocol_timer<bc::network::message_subscriber_ex>, public track<protocol_address>
+  : public network::protocol_timer<network::message_subscriber_ex>,
+    public track<protocol_address>
 {
 public:
     typedef std::shared_ptr<protocol_address> ptr;
@@ -48,7 +49,8 @@ public:
      * @param[in]  network   The network interface.
      * @param[in]  channel   The channel on which to start the protocol.
      */
-    protocol_address(lite_node& network, typename network::channel<bc::network::message_subscriber_ex>::ptr channel);
+    protocol_address(lite_node& network,
+                     typename network::channel<network::message_subscriber_ex>::ptr channel);
 
     /**
      * Start the protocol.

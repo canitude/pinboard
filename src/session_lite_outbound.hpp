@@ -29,25 +29,26 @@ namespace network { class message_subscriber_ex; }
 
 namespace node {
 
-class lite_node;
-
 /// Outbound connections session, thread safe.
 class BCT_API session_lite_outbound
-  : public lite_session<network::session_outbound<bc::network::message_subscriber_ex>, bc::network::message_subscriber_ex>,
+  : public lite_session<network::session_outbound<network::message_subscriber_ex>,
+                        network::message_subscriber_ex>,
     track<session_lite_outbound>
 {
 public:
     typedef std::shared_ptr<session_lite_outbound> ptr;
 
     /// Construct an instance.
-    session_lite_outbound(lite_node& network, chain_sync_state::ptr chain_state, pinboard::ptr pinboard);
+    session_lite_outbound(lite_node& network,
+                          chain_sync_state::ptr chain_state,
+                          pinboard::ptr pinboard);
 
 protected:
     /// Overridden to attach pinboard protocols.
-    void attach_protocols(typename network::channel<bc::network::message_subscriber_ex>::ptr channel) override;
+    void attach_protocols(typename network::channel<network::message_subscriber_ex>::ptr channel) override;
 
     /// Overridden to change version negotiation protocols.
-    virtual void attach_handshake_protocols(typename network::channel<bc::network::message_subscriber_ex>::ptr channel,
+    virtual void attach_handshake_protocols(typename network::channel<network::message_subscriber_ex>::ptr channel,
                                             result_handler handle_started) override;
 
     // Connect sequence

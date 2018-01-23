@@ -41,7 +41,8 @@ static const asio::seconds expiry_interval(600);
 // This class requires protocol version 31800.
 protocol_pinboard_sync::protocol_pinboard_sync(lite_node& network,
     typename channel<message_subscriber_ex>::ptr channel,
-    chain_sync_state::ptr chain_state, pinboard::ptr pinboard)
+    chain_sync_state::ptr chain_state,
+    pinboard::ptr pinboard)
   : protocol_timer<message_subscriber_ex>(network, channel, true, NAME),
     CONSTRUCT_TRACK(protocol_pinboard_sync),
     chain_state_(chain_state),

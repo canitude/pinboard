@@ -1,4 +1,5 @@
 /**
+ * Copyright (c) 2011-2017 libbitcoin developers (see AUTHORS)
  * Copyright (c) 2017-2018
  *
  * This program is free software: you can redistribute it and/or modify

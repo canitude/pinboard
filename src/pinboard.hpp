@@ -76,7 +76,9 @@ public:
     typedef std::function<void(const code&, object_const_ptr)> result_handler;
     typedef std::function<void(const bc::message::object_payload&)> object_handler;
 
-    pinboard(message_broadcaster::ptr broadcaster, chain_sync_state::ptr chain_state, const uint256_t &min_target);
+    pinboard(message_broadcaster::ptr broadcaster,
+             chain_sync_state::ptr chain_state,
+             const uint256_t &min_target);
 
     // Start/Run sequences.
     // ------------------------------------------------------------------------

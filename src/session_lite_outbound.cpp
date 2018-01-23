@@ -38,8 +38,8 @@ using namespace std::placeholders;
 session_lite_outbound::session_lite_outbound(lite_node& network,
                                              chain_sync_state::ptr chain_state,
                                              pinboard::ptr pinboard)
-  : lite_session<network::session_outbound<message_subscriber_ex>, message_subscriber_ex>(network, true),
-    CONSTRUCT_TRACK(node::session_lite_outbound),
+  : lite_session<session_outbound<message_subscriber_ex>, message_subscriber_ex>(network, true),
+    CONSTRUCT_TRACK(session_lite_outbound),
     chain_state_(chain_state),
     pinboard_(pinboard)
 {
@@ -72,7 +72,7 @@ void session_lite_outbound::attach_protocols(typename channel<message_subscriber
 }
 
 void session_lite_outbound::attach_handshake_protocols(typename channel<message_subscriber_ex>::ptr channel,
-                                result_handler handle_started)
+                                                       result_handler handle_started)
 {
     using serve = message::version::service;
     const auto relay = this->settings_.relay_transactions;

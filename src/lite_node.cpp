@@ -1,4 +1,5 @@
 /**
+ * Copyright (c) 2011-2017 libbitcoin developers (see AUTHORS)
  * Copyright (c) 2017-2018
  *
  * This program is free software: you can redistribute it and/or modify
@@ -140,7 +141,6 @@ boost::circular_buffer<message::network_address>::const_iterator find(const boos
     return std::find_if(list.begin(), list.end(), found);
 }
 
-
 void lite_node::store(const address::list& addresses, result_handler handler)
 {
     // Critical Section
@@ -262,7 +262,6 @@ code lite_node::fetch_addresses(message::network_address::list& out_addresses, u
 
 // Pending close collection (open connections).
 // ----------------------------------------------------------------------------
-
 bool lite_node::connected(const address& address) const
 {
     const auto match = [&address](const typename channel<message_subscriber_ex>::ptr& element)
@@ -297,9 +296,15 @@ typename network::session_outbound<message_subscriber_ex>::ptr lite_node::attach
 
 // Shutdown
 // ----------------------------------------------------------------------------
-
 bool lite_node::stop()
 {
+    if (stopped())
+    {
+        LOG_ERROR(LOG_NODE)
+            << "An attempt to stop lite_node that is already stopped.";
+        return true;
+    }
+
     // Suspend new work last so we can use work to clear subscribers.
     const auto p2p_stop = p2p<message_subscriber_ex>::stop();
 

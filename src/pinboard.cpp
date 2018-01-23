@@ -32,8 +32,8 @@ namespace libbitcoin {
 namespace node {
 
 pinboard::pinboard(message_broadcaster::ptr broadcaster,
-                       chain_sync_state::ptr chain_state,
-                       const uint256_t &min_target)
+                   chain_sync_state::ptr chain_state,
+                   const uint256_t &min_target)
     : broadcaster_(broadcaster), chain_state_(chain_state), min_target_(min_target)
 {
 }

@@ -23,13 +23,14 @@ namespace node {
 
 template <typename Message>
 void message_broadcaster::broadcast_to_pb(const Message &message,
-                     channel_handler handle_channel,
-                     result_handler handle_complete)
+                                          channel_handler handle_channel,
+                                          result_handler handle_complete)
 {
     network_->broadcast_to_pb<Message>(message, handle_channel, handle_complete);
 }
 
 using namespace bc::message;
+
 template void message_broadcaster::broadcast_to_pb<object>(const object&, channel_handler, result_handler);
 template void message_broadcaster::broadcast_to_pb<inventory>(const inventory&, channel_handler, result_handler);
 

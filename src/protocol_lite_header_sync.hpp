@@ -37,14 +37,14 @@ class lite_node;
 
 /// Headers sync protocol, thread safe.
 class BCT_API protocol_lite_header_sync
-  : public network::protocol_timer<bc::network::message_subscriber_ex>, public track<protocol_lite_header_sync>
+  : public network::protocol_timer<network::message_subscriber_ex>, public track<protocol_lite_header_sync>
 {
 public:
     typedef std::shared_ptr<protocol_lite_header_sync> ptr;
 
     /// Construct a header sync protocol instance.
     protocol_lite_header_sync(lite_node& network,
-        typename network::channel<bc::network::message_subscriber_ex>::ptr channel,
+        typename network::channel<network::message_subscriber_ex>::ptr channel,
         chain_sync_state::ptr chain_state);
 
     /// Start the protocol.
@@ -58,7 +58,7 @@ private:
     bool handle_receive_get_headers(const code& ec, get_headers_const_ptr message, event_handler complete);
     bool handle_receive_inventory(const code& ec, inventory_const_ptr message, event_handler complete);
 
-    bool request_missing_headers(const bc::hash_digest &last);
+    bool request_missing_headers(const hash_digest &last);
 
     chain_sync_state::ptr chain_state_;
 };
